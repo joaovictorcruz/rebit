@@ -13,6 +13,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
+
 model Usuario {
   id                  String              @id @default(uuid())
   nome                String
@@ -31,9 +34,15 @@ model Usuario {
   avaliacoesFeitas    RecebidaAvaliacao[] @relation(name: "AvaliacaoFeita")
 }
 
+enum CondicaoProduto {
+  NOVO
+  SEMI_NOVO
+}
+
 model Produto {
   id         String  @id @default(uuid())
   nome       String
+  condicao   CondicaoProduto
   descricao  String
   preco      Decimal
   quantidade Int
@@ -69,6 +78,14 @@ model OrderItem {
   produtoId  String
   pedido     Pedido   @relation(fields: [pedidoId], references: [id])
   pedidoId   String
+}
+
+enum OrderStatus {
+  PENDENTE
+  PROCESSANDO
+  ENVIADO
+  ENTREGUE
+  CANCELADO
 }
 
 model CartItem {
@@ -118,4 +135,12 @@ model Pagamento {
   status     String   @default("Pendente")
   criadoEm   DateTime @default(now())
   atualizado DateTime @default(now()) @updatedAt
+}
+
+enum PaymentStatus {
+  PENDENTE
+  PROCESSANDO
+  CONCLUIDO
+  FALHOU
+  REEMBOLSADO
 }
