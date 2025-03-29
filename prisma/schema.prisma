@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,11 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-
 model Usuario {
-  id                  String              @id @default(uuid())
+  id                  Int                 @id @default(autoincrement())
   nome                String
   email               String              @unique
   senha               String
@@ -40,7 +31,7 @@ enum CondicaoProduto {
 }
 
 model Produto {
-  id         String  @id @default(uuid())
+  id         Int             @id @default(autoincrement())
   nome       String
   condicao   CondicaoProduto
   descricao  String
@@ -48,10 +39,10 @@ model Produto {
   quantidade Int
   imagem     String?
   categoria  String
-  criadoEm   DateTime @default(now())
+  criadoEm   DateTime        @default(now())
 
   vendedor   Usuario   @relation(fields: [vendedorId], references: [id])
-  vendedorId String
+  vendedorId Int
 
   pedidos    OrderItem[]
   carrinhos  CartItem[]
@@ -60,24 +51,24 @@ model Produto {
 }
 
 model Pedido {
-  id         String   @id @default(uuid())
-  usuario    Usuario     @relation(fields: [usuarioId], references: [id])
-  usuarioId  String
-  status     String   @default("Pendente")
-  criadoEm   DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  status     String    @default("Pendente")
+  criadoEm   DateTime  @default(now())
 
   itens      OrderItem[]
   pagamento  Pagamento?
 }
 
 model OrderItem {
-  id        String   @id @default(uuid())
+  id        Int       @id @default(autoincrement())
   quantidade Int
   preco     Decimal
-  produto    Produto @relation(fields: [produtoId], references: [id])
-  produtoId  String
+  produto    Produto  @relation(fields: [produtoId], references: [id])
+  produtoId  Int
   pedido     Pedido   @relation(fields: [pedidoId], references: [id])
-  pedidoId   String
+  pedidoId   Int
 }
 
 enum OrderStatus {
@@ -89,52 +80,52 @@ enum OrderStatus {
 }
 
 model CartItem {
-  id         String   @id @default(uuid())
+  id         Int       @id @default(autoincrement())
   quantidade Int
-  produto    Produto @relation(fields: [produtoId], references: [id])
-  produtoId  String
-  usuario    Usuario    @relation(fields: [usuarioId], references: [id])
-  usuarioId  String
+  produto    Produto   @relation(fields: [produtoId], references: [id])
+  produtoId  Int
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
 }
 
 model Favorito {
-  id         String   @id @default(uuid())
-  usuario    Usuario     @relation(fields: [usuarioId], references: [id])
-  usuarioId  String
-  produto    Produto @relation(fields: [produtoId], references: [id])
-  produtoId  String
+  id         Int       @id @default(autoincrement())
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  produto    Produto   @relation(fields: [produtoId], references: [id])
+  produtoId  Int
 }
 
 model MinhasAvaliacoes {
-  id         String   @id @default(uuid())
-  usuario    Usuario     @relation(fields: [usuarioId], references: [id])
-  usuarioId  String
-  produto    Produto @relation(fields: [produtoId], references: [id])
-  produtoId  String
+  id         Int       @id @default(autoincrement())
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  produto    Produto   @relation(fields: [produtoId], references: [id])
+  produtoId  Int
   nota       Int
   comentario String?
-  criadoEm   DateTime @default(now())
+  criadoEm   DateTime  @default(now())
 }
 
 model RecebidaAvaliacao {
-  id          String   @id @default(uuid())
-  usuario     Usuario     @relation(name: "AvaliacaoRecebida", fields: [usuarioId], references: [id])
-  usuarioId   String
-  avaliador   Usuario     @relation(name: "AvaliacaoFeita", fields: [avaliadorId], references: [id])
-  avaliadorId String
+  id          Int       @id @default(autoincrement())
+  usuario     Usuario   @relation(name: "AvaliacaoRecebida", fields: [usuarioId], references: [id])
+  usuarioId   Int
+  avaliador   Usuario   @relation(name: "AvaliacaoFeita", fields: [avaliadorId], references: [id])
+  avaliadorId Int
   nota        Int
   comentario  String?
-  criadoEm    DateTime @default(now())
+  criadoEm    DateTime  @default(now())
 }
 
 model Pagamento {
-  id         String   @id @default(uuid())
+  id         Int       @id @default(autoincrement())
   pedido     Pedido    @relation(fields: [pedidoId], references: [id])
-  pedidoId   String   @unique
+  pedidoId   Int       @unique
   metodo     String
-  status     String   @default("Pendente")
-  criadoEm   DateTime @default(now())
-  atualizado DateTime @default(now()) @updatedAt
+  status     String    @default("Pendente")
+  criadoEm   DateTime  @default(now())
+  atualizado DateTime  @default(now()) @updatedAt
 }
 
 enum PaymentStatus {
